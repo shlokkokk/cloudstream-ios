@@ -148,11 +148,16 @@
     detailsCastRow: document.getElementById('details-cast-row'),
     detailsSimilarRow: document.getElementById('details-similar-row'),
 
-    // Player Modal & Server Drawer
+    // Player Modal & Drawers
     playerModal: document.getElementById('player-modal'),
     playerBackBtn: document.getElementById('player-back-btn'),
     playerMainTitle: document.getElementById('player-main-title'),
     playerSubTitle: document.getElementById('player-sub-title'),
+    subtitleSelectorBtn: document.getElementById('subtitle-selector-btn'),
+    currentSubLabel: document.getElementById('current-sub-label'),
+    subDrawerBackdrop: document.getElementById('sub-drawer-backdrop'),
+    subDrawerList: document.getElementById('sub-drawer-list'),
+    subDrawerCloseBtn: document.getElementById('sub-drawer-close-btn'),
     serverSelectorBtn: document.getElementById('server-selector-btn'),
     currentServerLabel: document.getElementById('current-server-label'),
     serverDrawerBackdrop: document.getElementById('server-drawer-backdrop'),
@@ -671,6 +676,56 @@
         showToast('Could not load servers', 'fa-triangle-exclamation');
       }
     };
+  }
+
+  // Subtitle Languages for Native iOS Drawer
+  const SUBTITLE_LANGUAGES = [
+    { code: 'en', name: 'English [CC]', badge: 'Default', desc: 'Full English closed captions' },
+    { code: 'hi', name: 'Hindi (हिन्दी)', badge: 'Multi-Audio/Sub', desc: 'Hindi subtitle track' },
+    { code: 'es', name: 'Spanish (Español)', badge: 'Sub', desc: 'Spanish subtitle track' },
+    { code: 'fr', name: 'French (Français)', badge: 'Sub', desc: 'French subtitle track' },
+    { code: 'de', name: 'German (Deutsch)', badge: 'Sub', desc: 'German subtitle track' },
+    { code: 'ar', name: 'Arabic (العربية)', badge: 'Sub', desc: 'Arabic subtitle track' },
+    { code: 'off', name: 'Captions Off', badge: 'Mute CC', desc: 'Hide on-screen subtitles' }
+  ];
+
+  function renderSubtitleDrawer() {
+    if (!DOM.subDrawerList) return;
+    DOM.subDrawerList.innerHTML = '';
+    const currentCode = AppState.settings.preferredSubtitle || 'en';
+
+    SUBTITLE_LANGUAGES.forEach(lang => {
+      const isCur = lang.code === currentCode;
+      const item = document.createElement('div');
+      item.className = `server-drawer-item ${isCur ? 'active' : ''}`;
+      item.innerHTML = `
+        <div class="server-item-left">
+          <span class="server-item-name">${lang.name}</span>
+          <span class="server-item-desc">${lang.desc}</span>
+        </div>
+        <div class="server-item-right">
+          <span class="server-quality-pill">${lang.badge}</span>
+          <div class="server-active-check" style="${isCur ? '' : 'display:none;'}">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+      `;
+      item.addEventListener('click', () => {
+        AppState.settings.preferredSubtitle = lang.code;
+        localStorage.setItem('cs_pref_sub', lang.code);
+        if (DOM.currentSubLabel) DOM.currentSubLabel.textContent = lang.code === 'off' ? 'CC Off' : lang.name.split(' ')[0];
+        renderSubtitleDrawer();
+        if (DOM.subDrawerBackdrop) DOM.subDrawerBackdrop.style.display = 'none';
+        showToast(`Subtitles set to ${lang.name}`, 'fa-closed-captioning');
+        
+        if (AppState.activeMedia) {
+          const s = AppState.activeMedia.season || 1;
+          const e = AppState.activeMedia.episode || 1;
+          loadStreamSources(AppState.activeMedia, s, e);
+        }
+      });
+      DOM.subDrawerList.appendChild(item);
+    });
   }
 
   // Switch Stream Server
@@ -1265,6 +1320,29 @@
       showToast(`Loading Episode ${prevEp}...`);
       openPlayer(AppState.activeMedia, curSeason, prevEp, Math.max(0, AppState.currentEpisodeIndex - 1));
     });
+
+    // Subtitle Drawer Open & Close
+    if (DOM.subtitleSelectorBtn) {
+      DOM.subtitleSelectorBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        renderSubtitleDrawer();
+        if (DOM.subDrawerBackdrop) DOM.subDrawerBackdrop.style.display = 'flex';
+      });
+    }
+
+    if (DOM.subDrawerCloseBtn) {
+      DOM.subDrawerCloseBtn.addEventListener('click', () => {
+        if (DOM.subDrawerBackdrop) DOM.subDrawerBackdrop.style.display = 'none';
+      });
+    }
+
+    if (DOM.subDrawerBackdrop) {
+      DOM.subDrawerBackdrop.addEventListener('click', (e) => {
+        if (e.target === DOM.subDrawerBackdrop) {
+          DOM.subDrawerBackdrop.style.display = 'none';
+        }
+      });
+    }
 
     // iOS Server Bottom Drawer Open & Close
     if (DOM.serverSelectorBtn) {

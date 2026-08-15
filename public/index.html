@@ -20,7 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="/app.css?v=2.6">
+  <link rel="stylesheet" href="/app.css?v=2.7">
 </head>
 <body class="dark-theme">
   <!-- Safe Area Wrapper -->
@@ -394,10 +394,13 @@
         </div>
 
         <div class="player-header-actions">
+          <button class="server-pill-btn" id="subtitle-selector-btn" title="Choose Subtitles">
+            <i class="fa-solid fa-closed-captioning" style="color: var(--accent-cyan);"></i>
+            <span id="current-sub-label">English</span>
+          </button>
           <button class="server-pill-btn" id="server-selector-btn" title="Choose Server / Mirror">
             <i class="fa-solid fa-server"></i>
             <span id="current-server-label">Server</span>
-            <i class="fa-solid fa-sliders" style="font-size: 10px; margin-left: 2px; color: var(--accent-cyan);"></i>
           </button>
         </div>
       </div>
@@ -430,7 +433,25 @@
         </button>
       </div>
 
-      <!-- iOS Native Bottom Drawer for Server & Source Selection (Never overlaps top nav) -->
+      <!-- iOS Native Bottom Drawer for Subtitles & Captions -->
+      <div class="server-drawer-backdrop" id="sub-drawer-backdrop" style="display: none;">
+        <div class="server-drawer-sheet" id="sub-drawer-sheet">
+          <div class="drawer-drag-pill"></div>
+          <div class="server-drawer-header">
+            <div class="server-drawer-title-box">
+              <i class="fa-solid fa-closed-captioning" style="color: var(--accent-cyan); font-size: 16px;"></i>
+              <h3>Subtitles & Captions</h3>
+            </div>
+            <button class="drawer-close-btn" id="sub-drawer-close-btn" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <p class="server-drawer-subtitle">Choose your preferred subtitle track. Automatically synchronized.</p>
+          <div class="server-drawer-list" id="sub-drawer-list"></div>
+        </div>
+      </div>
+
+      <!-- iOS Native Bottom Drawer for Server & Source Selection -->
       <div class="server-drawer-backdrop" id="server-drawer-backdrop" style="display: none;">
         <div class="server-drawer-sheet" id="server-drawer-sheet">
           <div class="drawer-drag-pill"></div>
@@ -527,6 +548,6 @@
   <!-- Hls.js for Direct Hardware-Accelerated Video Streams (0 Ads) -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <!-- App Script -->
-  <script src="/app.js?v=2.6"></script>
+  <script src="/app.js?v=2.7"></script>
 </body>
 </html>
