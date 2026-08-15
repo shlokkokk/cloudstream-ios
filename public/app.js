@@ -148,14 +148,16 @@
     detailsCastRow: document.getElementById('details-cast-row'),
     detailsSimilarRow: document.getElementById('details-similar-row'),
 
-    // Player Modal
+    // Player Modal & Server Drawer
     playerModal: document.getElementById('player-modal'),
     playerBackBtn: document.getElementById('player-back-btn'),
     playerMainTitle: document.getElementById('player-main-title'),
     playerSubTitle: document.getElementById('player-sub-title'),
     serverSelectorBtn: document.getElementById('server-selector-btn'),
     currentServerLabel: document.getElementById('current-server-label'),
-    serverDropdownMenu: document.getElementById('server-dropdown-menu'),
+    serverDrawerBackdrop: document.getElementById('server-drawer-backdrop'),
+    serverDrawerList: document.getElementById('server-drawer-list'),
+    serverDrawerCloseBtn: document.getElementById('server-drawer-close-btn'),
     nativeVideoPlayer: document.getElementById('native-video-player'),
     streamEmbedFrame: document.getElementById('stream-embed-frame'),
     playerLoadingOverlay: document.getElementById('player-loading-overlay'),
@@ -591,12 +593,13 @@
       id: media.id,
       tmdbId: media.tmdbId || media.id,
       season: season || 1,
-      episode: episode || 1
+      episode: episode || 1,
+      sub: AppState.settings.preferredSubtitle || 'en'
     });
 
     DOM.currentServerLabel.textContent = 'Loading...';
     AppState.currentSourceList = [];
-    DOM.serverDropdownMenu.innerHTML = '';
+    if (DOM.serverDrawerList) DOM.serverDrawerList.innerHTML = '';
 
     let firstSourceLoaded = false;
 
@@ -621,23 +624,37 @@
 
         AppState.currentSourceList.push(source);
 
-        // Add to server dropdown
-        const item = document.createElement('div');
-        item.className = `server-menu-item ${source.id === AppState.currentServer ? 'active' : ''}`;
-        item.setAttribute('data-server-id', source.id);
-        item.innerHTML = `<span>${source.name}</span><span style="font-size:10px;color:var(--accent-cyan);">${source.quality}</span>`;
-        item.addEventListener('click', () => {
-          switchServer(source.id);
-          DOM.serverDropdownMenu.style.display = 'none';
-        });
-        DOM.serverDropdownMenu.appendChild(item);
+        // Add to iOS Server Drawer List
+        if (DOM.serverDrawerList) {
+          const item = document.createElement('div');
+          const isActive = source.id === AppState.currentServer || (!firstSourceLoaded && AppState.currentSourceList.length === 1);
+          item.className = `server-drawer-item ${isActive ? 'active' : ''}`;
+          item.setAttribute('data-server-id', source.id);
+          item.innerHTML = `
+            <div class="server-item-left">
+              <span class="server-item-name">${source.name}</span>
+              <span class="server-item-desc">High-speed streaming mirror</span>
+            </div>
+            <div class="server-item-right">
+              <span class="server-quality-pill">${source.quality || '1080p'}</span>
+              <div class="server-active-check" style="${isActive ? '' : 'display:none;'}">
+                <i class="fa-solid fa-check"></i>
+              </div>
+            </div>
+          `;
+          item.addEventListener('click', () => {
+            switchServer(source.id);
+            if (DOM.serverDrawerBackdrop) DOM.serverDrawerBackdrop.style.display = 'none';
+          });
+          DOM.serverDrawerList.appendChild(item);
+        }
 
         // FIRST source → load player IMMEDIATELY, no waiting
         // Mirrors: callback fires → modifyState { add(link) } → player picks first link
         if (!firstSourceLoaded) {
           firstSourceLoaded = true;
           AppState.currentServer = source.id;
-          DOM.currentServerLabel.textContent = source.name;
+          DOM.currentServerLabel.textContent = source.name.split(' (')[0];
           switchServer(source.id);
         }
 
@@ -663,9 +680,16 @@
     if (!source) return;
 
     DOM.currentServerLabel.textContent = source.name.split(' (')[0];
-    DOM.serverDropdownMenu.querySelectorAll('.server-menu-item').forEach(el => {
-      el.classList.toggle('active', el.getAttribute('data-server-id') === serverId);
-    });
+    
+    // Update active highlight & checkmark in iOS Server Drawer
+    if (DOM.serverDrawerList) {
+      DOM.serverDrawerList.querySelectorAll('.server-drawer-item').forEach(el => {
+        const isCur = el.getAttribute('data-server-id') === serverId;
+        el.classList.toggle('active', isCur);
+        const check = el.querySelector('.server-active-check');
+        if (check) check.style.display = isCur ? 'flex' : 'none';
+      });
+    }
 
     const isDirectHls = source.type === 'direct' && source.url && (source.url.includes('.m3u8') || source.url.includes('.mp4'));
     const isEmbed = source.type === 'embed';
@@ -1242,15 +1266,27 @@
       openPlayer(AppState.activeMedia, curSeason, prevEp, Math.max(0, AppState.currentEpisodeIndex - 1));
     });
 
-    // Server Selector Toggle
-    DOM.serverSelectorBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isVisible = DOM.serverDropdownMenu.style.display === 'block';
-      DOM.serverDropdownMenu.style.display = isVisible ? 'none' : 'block';
-    });
-    document.addEventListener('click', () => {
-      DOM.serverDropdownMenu.style.display = 'none';
-    });
+    // iOS Server Bottom Drawer Open & Close
+    if (DOM.serverSelectorBtn) {
+      DOM.serverSelectorBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (DOM.serverDrawerBackdrop) DOM.serverDrawerBackdrop.style.display = 'flex';
+      });
+    }
+
+    if (DOM.serverDrawerCloseBtn) {
+      DOM.serverDrawerCloseBtn.addEventListener('click', () => {
+        if (DOM.serverDrawerBackdrop) DOM.serverDrawerBackdrop.style.display = 'none';
+      });
+    }
+
+    if (DOM.serverDrawerBackdrop) {
+      DOM.serverDrawerBackdrop.addEventListener('click', (e) => {
+        if (e.target === DOM.serverDrawerBackdrop) {
+          DOM.serverDrawerBackdrop.style.display = 'none';
+        }
+      });
+    }
 
     // QR Modal Triggers & Close
     DOM.headerQrBtn.addEventListener('click', () => DOM.qrModal.style.display = 'flex');

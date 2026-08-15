@@ -167,7 +167,7 @@ app.get('/api/sources', async (req, res) => {
 // 5b. Stream Sources — SSE (Android extractor architecture: each provider scrapes in parallel,
 //     callback fires per stream found, client plays DIRECT .m3u8 via HLS.js — zero spinner)
 app.get('/api/sources/stream', async (req, res) => {
-  const { type, id, tmdbId, season, episode } = req.query;
+  const { type, id, tmdbId, season, episode, sub } = req.query;
   const resolvedTmdbId = tmdbId || id;
   if (!resolvedTmdbId) {
     return res.status(400).json({ error: 'Parameter tmdbId or id is required' });
@@ -186,6 +186,7 @@ app.get('/api/sources/stream', async (req, res) => {
       type: type || 'movie',
       season: parseInt(season) || 1,
       episode: parseInt(episode) || 1,
+      sub: sub || 'en',
       callback: (source) => {
         if (!res.writableEnded) {
           // Assign stable IDs

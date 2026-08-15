@@ -397,14 +397,11 @@
         </div>
 
         <div class="player-header-actions">
-          <div class="custom-server-dropdown">
-            <button class="server-pill-btn" id="server-selector-btn">
-              <i class="fa-solid fa-server"></i>
-              <span id="current-server-label">Server</span>
-              <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="server-dropdown-menu" id="server-dropdown-menu" style="display: none;"></div>
-          </div>
+          <button class="server-pill-btn" id="server-selector-btn" title="Choose Server / Mirror">
+            <i class="fa-solid fa-server"></i>
+            <span id="current-server-label">Server</span>
+            <i class="fa-solid fa-sliders" style="font-size: 10px; margin-left: 2px; color: var(--accent-cyan);"></i>
+          </button>
         </div>
       </div>
 
@@ -434,6 +431,24 @@
         <button class="player-ctrl-btn" id="next-ep-btn" style="display: none;" title="Next Episode">
           Next Ep <i class="fa-solid fa-forward-step"></i>
         </button>
+      </div>
+
+      <!-- iOS Native Bottom Drawer for Server & Source Selection (Never overlaps top nav) -->
+      <div class="server-drawer-backdrop" id="server-drawer-backdrop" style="display: none;">
+        <div class="server-drawer-sheet" id="server-drawer-sheet">
+          <div class="drawer-drag-pill"></div>
+          <div class="server-drawer-header">
+            <div class="server-drawer-title-box">
+              <i class="fa-solid fa-server" style="color: var(--accent-cyan); font-size: 16px;"></i>
+              <h3>Streaming Servers</h3>
+            </div>
+            <button class="drawer-close-btn" id="server-drawer-close-btn" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <p class="server-drawer-subtitle">Tap any mirror to switch instant playback or for different audio/captions.</p>
+          <div class="server-drawer-list" id="server-drawer-list"></div>
+        </div>
       </div>
     </div>
 

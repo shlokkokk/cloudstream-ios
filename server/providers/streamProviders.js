@@ -16,16 +16,17 @@ function isCacheValid(entry) {
   return entry && (Date.now() - entry.timestamp) < CACHE_TTL_MS;
 }
 
-// ─── Build verified fast streaming sources ─────────────────────────────────────
-function buildSources(tmdbId, type, season, episode) {
+// ─── Build verified fast streaming sources with Auto-Captions ──────────────────
+function buildSources(tmdbId, type, season, episode, preferredSub = 'en') {
   const isMovie = type === 'movie';
   const s = season || 1;
   const e = episode || 1;
+  const subLang = preferredSub || 'en';
 
   return [
     {
       id: `autoembed-co-${tmdbId}`,
-      name: '🚀 AutoEmbed (Clean & Fast)',
+      name: '🚀 AutoEmbed Fast (Zero Ads)',
       quality: '1080p',
       type: 'embed',
       url: isMovie
@@ -51,15 +52,6 @@ function buildSources(tmdbId, type, season, episode) {
         : `https://vidsrc.dev/embed/tv/${tmdbId}/${s}-${e}`
     },
     {
-      id: `vidsrc-pm-${tmdbId}`,
-      name: '⚡ VidSrc Prime',
-      quality: '1080p',
-      type: 'embed',
-      url: isMovie
-        ? `https://vidsrc.pm/embed/movie/${tmdbId}`
-        : `https://vidsrc.pm/embed/tv/${tmdbId}/${s}-${e}`
-    },
-    {
       id: `twoembed-${tmdbId}`,
       name: '📺 2Embed Core',
       quality: '1080p',
@@ -72,7 +64,7 @@ function buildSources(tmdbId, type, season, episode) {
 }
 
 // ─── Streaming (SSE) source emitter — callback fires INSTANTLY per source ─────
-export async function extractStreamsParallel({ tmdbId, type, season = 1, episode = 1, callback }) {
+export async function extractStreamsParallel({ tmdbId, type, season = 1, episode = 1, sub = 'en', callback }) {
   const key = cacheKey(tmdbId, type, season, episode);
   const cached = SOURCE_CACHE.get(key);
 
@@ -82,7 +74,7 @@ export async function extractStreamsParallel({ tmdbId, type, season = 1, episode
     return;
   }
 
-  const sources = buildSources(tmdbId, type, season, episode);
+  const sources = buildSources(tmdbId, type, season, episode, sub);
 
   for (const source of sources) {
     callback(source);
@@ -93,13 +85,13 @@ export async function extractStreamsParallel({ tmdbId, type, season = 1, episode
 }
 
 // ─── REST fallback (non-SSE clients) ─────────────────────────────────────────
-export async function resolveStreamSources({ tmdbId, type, season, episode }) {
+export async function resolveStreamSources({ tmdbId, type, season, episode, sub = 'en' }) {
   const key = cacheKey(tmdbId, type, season, episode);
   const cached = SOURCE_CACHE.get(key);
 
   if (isCacheValid(cached)) return { sources: cached.sources };
 
-  const sources = buildSources(tmdbId, type, season, episode);
+  const sources = buildSources(tmdbId, type, season, episode, sub);
   SOURCE_CACHE.set(key, { sources, timestamp: Date.now() });
   return { sources };
 }
