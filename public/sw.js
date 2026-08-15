@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cloudstream-ios-v1';
+const CACHE_NAME = 'cloudstream-ios-v2.5';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -8,12 +8,12 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS);
     })
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -54,10 +54,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 3. Static asset cache with network fallback
+  // 3. Network-First strategy: Always fetch newest code from cloud, fallback to cache if offline
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET') {
+          const resClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
+        }
+        return networkResponse;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
