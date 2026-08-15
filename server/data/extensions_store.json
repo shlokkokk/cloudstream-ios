@@ -1,0 +1,172 @@
+{
+  "repositories": [
+    {
+      "id": "repo-megarepo",
+      "name": "🔥 Mega Repository (All-in-One Global Index)",
+      "shortcode": "megarepo3737",
+      "url": "https://raw.githubusercontent.com/self-similarity/MegaRepo/builds/repo.json",
+      "category": "All-in-One",
+      "language": "Multi-language",
+      "pluginsCount": 150,
+      "description": "Universal index aggregating maintained repositories across all categories and regions.",
+      "featured": true
+    },
+    {
+      "id": "repo-netmirror",
+      "name": "🎥 NetMirror OTT Repo (Netflix, Disney+, Prime, Hotstar)",
+      "shortcode": "Netmirror",
+      "url": "https://raw.githubusercontent.com/Sushan64/NetMirror-Extension/refs/heads/builds/Netflix.json",
+      "category": "OTT Mirrors",
+      "language": "English / Multi",
+      "pluginsCount": 4,
+      "description": "Direct streaming mirrors for Netflix, Disney+, Hotstar, and Prime Video content.",
+      "featured": true
+    },
+    {
+      "id": "repo-cnc",
+      "name": "🎵 CNC Verse (Indian, Tamil, Global & Serials)",
+      "shortcode": "cncv",
+      "url": "https://raw.githubusercontent.com/NivinCNC/CNCVerse-Cloud-Stream-Extension/refs/heads/builds/CNC.json",
+      "category": "Indian & Regional",
+      "language": "Tamil / Hindi / English",
+      "pluginsCount": 26,
+      "description": "CastleTv, CineTv, DesiSerials, Einthusan, Tamilian, SunGo, HDrezka, StreamFlix.",
+      "featured": true
+    },
+    {
+      "id": "repo-phisher",
+      "name": "🎬 Phisher Mega Repo (Hindi, English & Global)",
+      "shortcode": "phisherrepo864",
+      "url": "https://raw.githubusercontent.com/phisher98/cloudstream-extensions-phisher/refs/heads/builds/repo.json",
+      "category": "Hindi & Global",
+      "language": "Hindi / English / Multi",
+      "pluginsCount": 89,
+      "description": "Huge collection: SuperStream, HiAnime, YTS, Yflix, Ultima, FourKHD, HDhub4u, Desicinemas, StreamPlay, Bollyflix, Toonstream.",
+      "featured": true
+    },
+    {
+      "id": "repo-megix",
+      "name": "🇮🇳 Megix CSX (Bollywood, Hollywood & Netflix Mirrors)",
+      "shortcode": "csx3670",
+      "url": "https://raw.githubusercontent.com/SaurabhKaperwan/CSX/builds/CS.json",
+      "category": "OTT Mirrors & Desi",
+      "language": "Hindi / English",
+      "pluginsCount": 8,
+      "description": "Bollyflix, CineStream, Moviesmod, NetflixMirror, VegaMovies, GDIndex.",
+      "featured": true
+    },
+    {
+      "id": "repo-karma",
+      "name": "🏟️ CS-Karma (Live Sports, F1, WWE, Replays & Anime)",
+      "shortcode": "cskarma",
+      "url": "https://raw.githubusercontent.com/Kraptor123/cs-Karma/refs/heads/master/repo.json",
+      "category": "Sports & Replays",
+      "language": "English / Multi",
+      "pluginsCount": 41,
+      "description": "Live sports replays, F1, Basketball, CricHD, SoccerFullMatch, AnimeAV, TokyBook, TVGarden.",
+      "featured": true
+    }
+  ],
+  "extensions": [
+    {
+      "id": "ext-netmirror-pro",
+      "name": "🎥 NetMirror (Netflix / Disney+ / Prime Video / Hotstar)",
+      "version": "3.1.0",
+      "type": "OTT Originals",
+      "author": "Sushan64",
+      "description": "Direct streaming mirrors for Netflix, Disney+, Hotstar, and Prime Video exclusive content.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-cnc-verse",
+      "name": "🎵 CNC Verse (Einthusan / DesiSerials / CastleTV)",
+      "version": "2.8.0",
+      "type": "Indian & Regional",
+      "author": "NivinCNC",
+      "description": "Complete Indian library: Hindi, Tamil, Telugu cinema, TV serials, and SunGo streams.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-megarepo-universal",
+      "name": "🔥 MegaRepository Universal Aggregator",
+      "version": "5.0.0",
+      "type": "All-in-One Global",
+      "author": "self-similarity",
+      "description": "Unified provider pulling high-speed stream links across 150+ international repositories.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-superstream",
+      "name": "⭐ SuperStream Ultima (1080p / 4K)",
+      "version": "4.2.0",
+      "type": "Movies & Series",
+      "author": "Phisher / CloudStream",
+      "description": "High-speed multi-quality scraper for latest movies, blockbusters & series with subtitles.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-desicinemas",
+      "name": "🇮🇳 VegaMovies & Bollyflix HD",
+      "version": "2.5.0",
+      "type": "Bollywood / Hindi / Regional",
+      "author": "Phisher / Megix",
+      "description": "Hindi movies, South Indian Hindi-dubbed, web series, and Indian TV serials.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-hianime",
+      "name": "⛩️ HiAnime & AnimePahe (Sub & Dub)",
+      "version": "3.8.0",
+      "type": "Anime",
+      "author": "Phisher / Community",
+      "description": "Extensive anime library with multi-resolution English Subbed and English Dubbed tracks.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-dramacool",
+      "name": "🌸 DramaCool & KissKH (K-Drama / Asian)",
+      "version": "2.2.0",
+      "type": "Asian Drama",
+      "author": "Community",
+      "description": "Korean, Chinese, and Japanese dramas, shows, and variety programs.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-vidsrc-pro",
+      "name": "⚡ VidSrc Pro & CC Multi-Stream",
+      "version": "3.1.0",
+      "type": "Multi-Source",
+      "author": "CloudStream Team",
+      "description": "Zero-buffering multi-CDN video source with auto-fallback servers.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-yts",
+      "name": "🍿 YTS & Yflix HD Master",
+      "version": "1.9.0",
+      "type": "HD Movies",
+      "author": "Phisher",
+      "description": "High-bitrate cinema streams with crystal clear multi-channel audio.",
+      "enabled": true,
+      "isBuiltIn": true
+    },
+    {
+      "id": "ext-sports-live",
+      "name": "🏟️ CS-Karma Sports & IPTV Live (8000+ Channels)",
+      "version": "2.0.0",
+      "type": "Live Sports & IPTV",
+      "author": "Kraptor",
+      "description": "Live match replays, football, basketball, cricket, F1, and world television channels.",
+      "enabled": true,
+      "isBuiltIn": true
+    }
+  ]
+}

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CloudStream — Ultimate iOS Streaming</title>
+  <meta name="description" content="Stream movies, TV shows, anime, and Asian dramas on iOS with CloudStream. Ad-free, high-speed, and seamless AirPlay support.">
+  <meta name="theme-color" content="#0b0d13">
+  
+  <!-- Apple iOS PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CloudStream">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body class="dark-theme">
+  <!-- Safe Area Wrapper -->
+  <div id="app-root" class="app-container">
+    
+    <!-- Top Glass Navigation Bar -->
+    <header class="app-header" id="app-header">
+      <div class="header-left">
+        <div class="brand-logo" id="brand-logo-btn">
+          <div class="brand-icon">
+            <i class="fa-solid fa-cloud-bolt"></i>
+          </div>
+          <span class="brand-name">Cloud<span class="brand-accent">Stream</span></span>
+          <span class="ios-badge">iOS</span>
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <button class="icon-btn search-trigger-btn" id="header-search-btn" aria-label="Search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <button class="icon-btn qr-trigger-btn" id="header-qr-btn" aria-label="Connect iPhone">
+          <i class="fa-solid fa-qrcode"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content" id="main-content">
+      
+      <!-- Tab 1: Home View -->
+      <section id="tab-home" class="tab-page active">
+        <!-- Dynamic Hero Showcase -->
+        <div class="hero-showcase" id="hero-showcase">
+          <div class="hero-backdrop" id="hero-backdrop"></div>
+          <div class="hero-gradient-overlay"></div>
+          <div class="hero-content">
+            <div class="hero-badge-row">
+              <span class="hero-pill-badge" id="hero-pill-type">FEATURED</span>
+              <span class="hero-rating" id="hero-rating"><i class="fa-solid fa-star"></i> 8.9</span>
+              <span class="hero-year" id="hero-year">2026</span>
+              <span class="hero-quality">4K HDR</span>
+            </div>
+            <h1 class="hero-title" id="hero-title">Loading Featured...</h1>
+            <p class="hero-overview" id="hero-overview"></p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" id="hero-play-btn">
+                <i class="fa-solid fa-play"></i> Watch Now
+              </button>
+              <button class="btn btn-glass" id="hero-details-btn">
+                <i class="fa-solid fa-circle-info"></i> Details
+              </button>
+              <button class="btn btn-glass icon-only" id="hero-bookmark-btn" aria-label="Bookmark">
+                <i class="fa-regular fa-bookmark"></i>
+              </button>
+            </div>
+          </div>
+          <!-- Hero Carousel Dots -->
+          <div class="hero-dots" id="hero-dots"></div>
+        </div>
+
+        <!-- Continue Watching Shelf (Visible if history exists) -->
+        <section class="media-shelf" id="continue-watching-shelf" style="display: none;">
+          <div class="shelf-header">
+            <h2 class="shelf-title"><i class="fa-solid fa-clock-rotate-left"></i> Continue Watching</h2>
+            <button class="shelf-action-link" id="clear-history-btn">Clear</button>
+          </div>
+          <div class="shelf-row horizontal-scroll" id="continue-watching-row"></div>
+        </section>
+
+        <!-- Dynamic Shelves Container -->
+        <div id="dynamic-shelves-container">
+          <!-- Skeletons will be injected here during initial load -->
+          <div class="shelf-skeleton">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-row">
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+              <div class="skeleton-card"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 2: Search View -->
+      <section id="tab-search" class="tab-page">
+        <div class="search-page-header">
+          <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="search" id="search-input" class="search-input" placeholder="Search movies, TV shows, anime..." autocomplete="off">
+            <button class="clear-search-btn" id="clear-search-btn" style="display: none;">
+              <i class="fa-solid fa-circle-xmark"></i>
+            </button>
+          </div>
+          <div class="filter-pills" id="search-filter-pills">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="movie">Movies</button>
+            <button class="filter-pill" data-filter="tv">TV Shows</button>
+            <button class="filter-pill" data-filter="anime">Anime</button>
+          </div>
+        </div>
+        <div class="search-results-grid" id="search-results-grid">
+          <div class="empty-state" id="search-empty-state">
+            <i class="fa-solid fa-film empty-icon"></i>
+            <h3>Discover Unlimited Content</h3>
+            <p>Search for your favorite movies, series, or anime above.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Library / Watchlist View -->
+      <section id="tab-library" class="tab-page">
+        <div class="library-header">
+          <h2 class="page-title">My Library</h2>
+          <div class="library-tabs">
+            <button class="lib-tab-btn active" data-lib-tab="watchlist">Watchlist (<span id="watchlist-count">0</span>)</button>
+            <button class="lib-tab-btn" data-lib-tab="history">History (<span id="history-count">0</span>)</button>
+          </div>
+        </div>
+        <div class="library-grid" id="library-grid">
+          <div class="empty-state">
+            <i class="fa-regular fa-bookmark empty-icon"></i>
+            <h3>Your Watchlist is Empty</h3>
+            <p>Save movies and shows to watch later by tapping the bookmark icon.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 4: Settings View -->
+      <section id="tab-settings" class="tab-page">
+        <div class="settings-container">
+          <h2 class="page-title">Settings & Info</h2>
+          
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+              <h3>iPhone Setup & Connect</h3>
+            </div>
+            <p class="settings-card-desc">Scan the QR code with your mum's iPhone to open CloudStream on the local Wi-Fi network with zero setup.</p>
+            <button class="btn btn-primary btn-block" id="settings-open-qr-btn">
+              <i class="fa-solid fa-qrcode"></i> Show iPhone QR Code
+            </button>
+            <div class="pwa-install-banner" id="pwa-install-banner">
+              <div class="pwa-install-steps">
+                <strong>💡 Add to iPhone Home Screen:</strong>
+                <ol>
+                  <li>Tap the <strong>Share</strong> button <i class="fa-solid fa-arrow-up-from-bracket"></i> at the bottom of Safari.</li>
+                  <li>Scroll down and tap <strong>"Add to Home Screen"</strong> <i class="fa-regular fa-square-plus"></i>.</li>
+                  <li>Enjoy permanent full-screen streaming with zero certificate revokes!</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extensions & Plugins Manager Card -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <i class="fa-solid fa-puzzle-piece"></i>
+              <h3>Extensions & Community Repositories</h3>
+            </div>
+            <p class="settings-card-desc">Browse and install 27+ maintained CloudStream repositories with 500+ scrapers (Hindi, OTT Mirrors, Anime, Live Sports, Global content).</p>
+            
+            <div class="extensions-action-row" style="margin-bottom: 14px; display: flex; gap: 8px;">
+              <button class="btn btn-primary" id="add-repo-btn" style="flex: 1;">
+                <i class="fa-solid fa-plus"></i> Add via Shortcode / URL
+              </button>
+            </div>
+
+            <!-- Community Repositories Browser -->
+            <div style="margin-top: 14px; margin-bottom: 18px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <h4 style="font-size: 14px; font-weight: 700; color: var(--text-primary);">🌐 Browse Community Repos</h4>
+                <span class="ios-badge">15+ Repos</span>
+              </div>
+              
+              <!-- Repo Category Filter Pills -->
+              <div class="filter-pills" id="repo-filter-pills" style="margin-top: 0; margin-bottom: 12px;">
+                <button class="filter-pill active" data-repofilter="all">All</button>
+                <button class="filter-pill" data-repofilter="Hindi">Hindi & Desi</button>
+                <button class="filter-pill" data-repofilter="OTT">OTT Mirrors</button>
+                <button class="filter-pill" data-repofilter="Anime">Anime & Drama</button>
+                <button class="filter-pill" data-repofilter="Sports">Sports & TV</button>
+                <button class="filter-pill" data-repofilter="Arabic">Arabic</button>
+                <button class="filter-pill" data-repofilter="European">European</button>
+              </div>
+
+              <!-- Community Repos Grid/List -->
+              <div id="community-repos-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; padding-right: 4px;"></div>
+            </div>
+
+            <!-- Installed Active Extensions List -->
+            <div style="margin-top: 18px;">
+              <h4 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">⚡ Active Scrapers & Extractors</h4>
+              <div class="extension-list" id="extension-list"></div>
+            </div>
+
+            <!-- Installed Custom Repositories List -->
+            <div style="margin-top: 18px;">
+              <h4 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">📁 Installed Repositories</h4>
+              <div id="repositories-list"></div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <i class="fa-solid fa-sliders"></i>
+              <h3>Streaming Preferences</h3>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Preferred Server</span>
+                <span class="setting-subtext">Default scraper server for playback</span>
+              </div>
+              <select class="settings-select" id="pref-server-select">
+                <option value="server-vidsrc-pro">Server 1 (VidSrc Pro - 1080p Fast)</option>
+                <option value="server-vidsrc-cc">Server 2 (VidSrc CC - Multi-Audio)</option>
+                <option value="server-autoembed">Server 3 (AutoEmbed - Global CDN)</option>
+                <option value="server-smashy">Server 4 (SmashyStream)</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Default Subtitles</span>
+                <span class="setting-subtext">Automatic subtitle language</span>
+              </div>
+              <select class="settings-select" id="pref-subtitle-select">
+                <option value="en">English [CC]</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="ar">العربية</option>
+                <option value="pt">Português</option>
+                <option value="hi">Hindi</option>
+                <option value="off">Off</option>
+              </select>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Auto-Play Next Episode</span>
+                <span class="setting-subtext">Automatically load next episode for TV shows</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="pref-autoplay" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <i class="fa-solid fa-circle-info"></i>
+              <h3>About CloudStream for iOS</h3>
+            </div>
+            <div class="info-row">
+              <span>App Version</span>
+              <span class="badge-text">v4.8.0 iOS Engine</span>
+            </div>
+            <div class="info-row">
+              <span>Core Architecture</span>
+              <span>KMP Scrapers + PWA Engine</span>
+            </div>
+            <div class="info-row">
+              <span>Status</span>
+              <span class="status-badge online"><i class="fa-solid fa-circle"></i> Connected</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom iOS Tab Bar -->
+    <nav class="bottom-tab-bar" id="bottom-tab-bar">
+      <button class="tab-item active" data-tab="tab-home" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="tab-item" data-tab="tab-search" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Search</span>
+      </button>
+      <button class="tab-item" data-tab="tab-library" aria-label="Library">
+        <i class="fa-solid fa-bookmark"></i>
+        <span>Library</span>
+      </button>
+      <button class="tab-item" data-tab="tab-settings" aria-label="Settings">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Media Details Drawer / Modal -->
+    <div class="modal-backdrop" id="details-modal" style="display: none;">
+      <div class="modal-sheet details-sheet">
+        <button class="modal-close-btn" id="details-close-btn" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="details-content-scroll" id="details-content-scroll">
+          <div class="details-hero" id="details-hero">
+            <div class="details-backdrop" id="details-backdrop"></div>
+            <div class="details-hero-gradient"></div>
+            <div class="details-header-info">
+              <div class="details-poster-wrapper">
+                <img src="" alt="Poster" id="details-poster" class="details-poster">
+              </div>
+              <div class="details-meta-col">
+                <h2 class="details-title" id="details-title">Movie Title</h2>
+                <div class="details-badges" id="details-badges"></div>
+                <div class="details-actions">
+                  <button class="btn btn-primary" id="details-play-btn">
+                    <i class="fa-solid fa-play"></i> <span id="details-play-text">Play</span>
+                  </button>
+                  <button class="btn btn-glass icon-only" id="details-fav-btn" aria-label="Add to Watchlist">
+                    <i class="fa-regular fa-bookmark"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="details-body">
+            <div class="details-synopsis-section">
+              <h3>Synopsis</h3>
+              <p id="details-synopsis" class="details-synopsis"></p>
+            </div>
+            
+            <div class="details-genres-section" id="details-genres-section">
+              <h3>Genres</h3>
+              <div class="genre-tags" id="details-genres"></div>
+            </div>
+
+            <!-- TV Seasons and Episodes Drawer -->
+            <div class="tv-episodes-section" id="tv-episodes-section" style="display: none;">
+              <div class="season-picker-header">
+                <h3>Episodes</h3>
+                <div class="custom-select-wrapper">
+                  <select id="season-selector" class="season-selector"></select>
+                </div>
+              </div>
+              <div class="episodes-list" id="episodes-list"></div>
+            </div>
+
+            <!-- Cast Section -->
+            <div class="details-cast-section" id="details-cast-section">
+              <h3>Cast</h3>
+              <div class="cast-row horizontal-scroll" id="details-cast-row"></div>
+            </div>
+
+            <!-- Similar Content Shelf -->
+            <div class="details-similar-section" id="details-similar-section">
+              <h3>You Might Also Like</h3>
+              <div class="shelf-row horizontal-scroll" id="details-similar-row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div class="player-modal" id="player-modal" style="display: none;">
+      <!-- Floating Glass Top Navigation Bar -->
+      <div class="player-header" id="player-header">
+        <button class="player-back-btn" id="player-back-btn" aria-label="Close Player" title="Back">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        
+        <div class="player-title-info">
+          <div class="player-main-title" id="player-main-title">Title</div>
+          <div class="player-sub-title" id="player-sub-title">2026</div>
+        </div>
+
+        <div class="player-header-actions">
+          <div class="custom-server-dropdown">
+            <button class="server-pill-btn" id="server-selector-btn">
+              <i class="fa-solid fa-server"></i>
+              <span id="current-server-label">Server</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="server-dropdown-menu" id="server-dropdown-menu" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="player-frame-container" id="player-frame-container">
+        <!-- Poster Overlay — shown while embed site loads (replaces the spinner with movie art) -->
+        <div class="player-loading-overlay" id="player-loading-overlay">
+          <img id="player-backdrop-img" class="player-backdrop-blur" src="" alt="">
+          <div class="player-loading-overlay-gradient"></div>
+          <div class="player-loading-center">
+            <div class="player-loading-ring"></div>
+            <span class="player-loading-text">Loading stream…</span>
+          </div>
+        </div>
+
+        <!-- Direct Video Element for Native iOS Playback / AirPlay -->
+        <video id="native-video-player" class="native-video-player" playsinline webkit-playsinline controls style="display: none;"></video>
+        
+        <!-- Embedded High-Speed Video Stream Frame (No Sandbox Restriction) -->
+        <iframe id="stream-embed-frame" class="stream-embed-frame" allow="fullscreen; autoplay; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; web-share" referrerpolicy="origin" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no" frameborder="0"></iframe>
+      </div>
+
+      <!-- TV Episode Quick Switcher Floating Bar (Only for series) -->
+      <div class="player-episode-bar" id="player-bottom-bar" style="display: none;">
+        <button class="player-ctrl-btn" id="prev-ep-btn" style="display: none;" title="Previous Episode">
+          <i class="fa-solid fa-backward-step"></i> Prev
+        </button>
+        <button class="player-ctrl-btn" id="next-ep-btn" style="display: none;" title="Next Episode">
+          Next Ep <i class="fa-solid fa-forward-step"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- QR Code / Connect Modal -->
+    <div class="modal-backdrop" id="qr-modal" style="display: none;">
+      <div class="modal-sheet qr-sheet">
+        <button class="modal-close-btn" id="qr-close-btn" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="qr-content">
+          <div class="qr-icon-header">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <h2>Connect iPhone</h2>
+          <p class="qr-subtitle">Scan this QR code with your iPhone camera to stream immediately.</p>
+          
+          <div class="qr-code-box">
+            <img src="" alt="Scan QR Code" id="qr-code-img" class="qr-code-img">
+          </div>
+          
+          <div class="network-url-badge">
+            <i class="fa-solid fa-wifi"></i>
+            <span id="qr-network-url">http://...</span>
+            <button class="copy-url-btn" id="copy-url-btn" title="Copy URL">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+
+          <div class="qr-help-tip">
+            <i class="fa-solid fa-lightbulb"></i>
+            <span>Make sure your iPhone is connected to the same Wi-Fi network.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Repository Modal -->
+    <div class="modal-backdrop" id="add-repo-modal" style="display: none;">
+      <div class="modal-sheet qr-sheet">
+        <button class="modal-close-btn" id="repo-modal-close-btn" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="qr-content">
+          <div class="qr-icon-header">
+            <i class="fa-solid fa-plus"></i>
+          </div>
+          <h2>Add Repository</h2>
+          <p class="qr-subtitle">Paste any CloudStream repository JSON URL, raw GitHub link, or IPTV playlist.</p>
+          
+          <div style="margin-bottom: 16px; text-align: left;">
+            <input type="url" id="repo-url-input" class="search-input" placeholder="https://raw.githubusercontent.com/.../repo.json" style="width: 100%; padding: 12px; background: var(--bg-surface-elevated); border: 1px solid var(--border-glass); border-radius: 12px; color: #fff;">
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+            <button class="btn btn-primary btn-block" id="confirm-add-repo-btn">
+              <i class="fa-solid fa-download"></i> Install Repository
+            </button>
+          </div>
+
+          <div style="text-align: left; background: var(--bg-surface-elevated); padding: 12px; border-radius: 12px; font-size: 12px; color: var(--text-muted);">
+            <strong style="color: var(--text-secondary); display: block; margin-bottom: 4px;">💡 Quick Presets:</strong>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span class="preset-link" style="color: var(--accent-cyan); cursor: pointer;" onclick="document.getElementById('repo-url-input').value='https://raw.githubusercontent.com/recloudstream/cloudstream-extensions/master/repo.json'">+ CloudStream Global MegaRepo</span>
+              <span class="preset-link" style="color: var(--accent-cyan); cursor: pointer;" onclick="document.getElementById('repo-url-input').value='https://iptv-org.github.io/iptv/index.m3u'">+ IPTV Live TV (8,000+ Channels)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-notification" id="toast-notification" style="display: none;">
+      <i class="toast-icon fa-solid fa-circle-check"></i>
+      <span class="toast-message" id="toast-message">Message</span>
+    </div>
+
+  </div>
+
+  <!-- Hls.js for Direct Hardware-Accelerated Video Streams (0 Ads) -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- App Script -->
+  <script src="/app.js"></script>
+</body>
+</html>
