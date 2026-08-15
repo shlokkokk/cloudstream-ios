@@ -1440,9 +1440,9 @@ input:checked + .toggle-slider:before {
 /* Floating Glass Header */
 .player-header {
   position: absolute;
-  top: max(12px, var(--sat));
-  left: max(16px, var(--sal));
-  right: max(16px, var(--sar));
+  top: calc(env(safe-area-inset-top, 24px) + 12px);
+  left: max(16px, env(safe-area-inset-left, 16px));
+  right: max(16px, env(safe-area-inset-right, 16px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1555,10 +1555,10 @@ input:checked + .toggle-slider:before {
 
 @media (max-width: 768px) {
   .player-header {
-    gap: 6px;
-    top: max(8px, var(--sat));
-    left: max(8px, var(--sal));
-    right: max(8px, var(--sar));
+    gap: 8px;
+    top: calc(env(safe-area-inset-top, 24px) + 12px);
+    left: max(12px, env(safe-area-inset-left, 12px));
+    right: max(12px, env(safe-area-inset-right, 12px));
   }
 
   .player-back-btn {
