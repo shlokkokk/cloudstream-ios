@@ -36,15 +36,17 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Helper to get local network IP address
 function getLocalIpAddress() {
-  const interfaces = os.networkInterfaces();
-  for (const name of Object.keys(interfaces)) {
-    for (const iface of interfaces[name]) {
-      if (iface.family === 'IPv4' && !iface.internal) {
-        return iface.address;
+  try {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+      for (const iface of interfaces[name] || []) {
+        if (iface && iface.family === 'IPv4' && !iface.internal) {
+          return iface.address;
+        }
       }
     }
-  }
-  return 'localhost';
+  } catch (e) {}
+  return '127.0.0.1';
 }
 
 // REST API Endpoints
