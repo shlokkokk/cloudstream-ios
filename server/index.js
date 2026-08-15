@@ -32,7 +32,19 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '../public')));
+
+// Force Safari and mobile browsers to never serve stale cached JS/CSS
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+
+app.use(express.static(path.join(__dirname, '../public'), {
+  etag: false,
+  maxAge: 0
+}));
 
 // Helper to get local network IP address
 function getLocalIpAddress() {
