@@ -1,8 +1,7 @@
 /**
- * CloudStream Web — Verified Fast Stream Provider Engine
+ * CloudStream Web — Verified Clean Stream Provider Engine
  * 
- * Only verified, 100% reachable, unblocked high-speed mirrors.
- * Zero blocked domains & zero sandbox restriction warnings.
+ * Clean, fast, unblocked streaming mirrors with zero aggressive click-traps.
  */
 
 // ─── 20-Minute Episode Cache (identical to Android RepoLinkGenerator) ──────────
@@ -25,22 +24,22 @@ function buildSources(tmdbId, type, season, episode) {
 
   return [
     {
-      id: `vidsrc-pm-${tmdbId}`,
-      name: '⚡ VidSrc Prime (Instant)',
-      quality: '1080p',
-      type: 'embed',
-      url: isMovie
-        ? `https://vidsrc.pm/embed/movie/${tmdbId}`
-        : `https://vidsrc.pm/embed/tv/${tmdbId}/${s}-${e}`
-    },
-    {
       id: `autoembed-co-${tmdbId}`,
-      name: '🚀 AutoEmbed Fast',
+      name: '🚀 AutoEmbed (Clean & Fast)',
       quality: '1080p',
       type: 'embed',
       url: isMovie
         ? `https://autoembed.co/movie/tmdb/${tmdbId}`
         : `https://autoembed.co/tv/tmdb/${tmdbId}-${s}-${e}`
+    },
+    {
+      id: `111movies-${tmdbId}`,
+      name: '🎬 111Movies Ultra (No Popups)',
+      quality: '1080p',
+      type: 'embed',
+      url: isMovie
+        ? `https://111movies.com/movie/${tmdbId}`
+        : `https://111movies.com/tv/${tmdbId}/${s}/${e}`
     },
     {
       id: `vidsrc-dev-${tmdbId}`,
@@ -52,22 +51,13 @@ function buildSources(tmdbId, type, season, episode) {
         : `https://vidsrc.dev/embed/tv/${tmdbId}/${s}-${e}`
     },
     {
-      id: `vidlink-${tmdbId}`,
-      name: '🎯 VidLink Pro',
-      quality: '1080p / 4K',
-      type: 'embed',
-      url: isMovie
-        ? `https://vidlink.pro/movie/${tmdbId}?primaryColor=00f2fe&autoplay=true`
-        : `https://vidlink.pro/tv/${tmdbId}/${s}/${e}?primaryColor=00f2fe&autoplay=true`
-    },
-    {
-      id: `111movies-${tmdbId}`,
-      name: '🎬 111Movies Ultra',
+      id: `vidsrc-pm-${tmdbId}`,
+      name: '⚡ VidSrc Prime',
       quality: '1080p',
       type: 'embed',
       url: isMovie
-        ? `https://111movies.com/movie/${tmdbId}`
-        : `https://111movies.com/tv/${tmdbId}/${s}/${e}`
+        ? `https://vidsrc.pm/embed/movie/${tmdbId}`
+        : `https://vidsrc.pm/embed/tv/${tmdbId}/${s}-${e}`
     },
     {
       id: `twoembed-${tmdbId}`,

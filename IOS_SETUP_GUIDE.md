@@ -1,49 +1,50 @@
-# 📱 CloudStream for iOS: Setup & Streaming Guide
+# 📱 CloudStream for iOS — Complete Setup Guide
 
-This guide explains how to run CloudStream and set it up on your mum's iPhone with **zero sideloading, zero certificate expirations, and 100% native iOS feel**.
+This guide explains how to run CloudStream and set it up on your iPhone with **zero sideloading, zero certificate expirations, and 100% native iOS feel**.
 
 ---
 
-## 🚀 Quick Start (Local Network)
+## 📱 Quick Setup (Same Wi-Fi Network)
 
 ### Step 1: Start the Server
-Double-click `start.bat` (on Windows) or run:
+Make sure the server is running on this computer:
 ```bash
 npm start
+# or double click start.bat on Windows
 ```
-The terminal will display your local IP and print a **QR code**.
 
-### Step 2: Open on iPhone
-1. Connect your mum's iPhone to the **same Wi-Fi network**.
+### Step 2: Open on your iPhone
+1. Connect your iPhone to the **same Wi-Fi network**.
 2. Open the **iPhone Camera** app and point it at the QR code on your computer screen.
 3. Tap the yellow banner to open CloudStream in **Safari**.
 
 ### Step 3: Add to iPhone Home Screen (1-Tap Permanent App)
-1. At the bottom of Safari, tap the **Share** button <img src="https://upload.wikimedia.org/wikipedia/commons/d/d8/Share_icon_%28iOS%29.svg" width="16" />.
-2. Scroll down and select **"Add to Home Screen"** ➕.
-3. Tap **"Add"** in the top right.
-
-🎉 **Done!** CloudStream now appears as a native app on her Home Screen with:
-- Full screen viewing (no browser URL bars)
-- AirPlay to Apple TV & Smart TVs
-- Picture-in-Picture mode
-- Lock screen media controls with episode artwork
+This guide explains how to run CloudStream and set it up on your iPhone with **zero sideloading, zero certificate expirations, and 100% native iOS feel**.
 
 ---
 
-## 🌐 24/7 Free Cloud Hosting (No PC Required)
+## 🚀 Method 1: Local Wi-Fi Quick Access (No Hosting Needed)
 
-If you don't want to keep your PC on, you can host CloudStream 24/7 for free:
+1. Connect your iPhone to the **same Wi-Fi network** as this PC.
+2. Run `npm start` (or double click `start.bat`).
+3. Scan the QR code printed in the terminal or open:
+   ```text
+   http://192.168.29.153:3000
+   ```
+4. In Safari, tap **Share** ➔ **"Add to Home Screen"** ➔ **"Add"**.
 
-### Option A: Render.com (1-Click Free Hosting)
-1. Fork or push the `cloudstream-ios` folder to a GitHub repository.
-2. Go to [Render.com](https://render.com) and create a new **Web Service**.
-3. Select your repository:
-   - **Environment**: Node
+---
+
+## 🌐 Method 2: Permanent 24/7 Cloud Deployment (Render.com)
+
+1. Push this folder to your GitHub repository.
+2. Sign in to [render.com](https://render.com) and create a **Web Service**.
+3. Set:
    - **Build Command**: `npm install`
-   - **Start Command**: `npm start`
-4. Render will provide a free public URL (e.g. `https://cloudstream-mum.onrender.com`).
-5. Open this link on your mum's iPhone and **Add to Home Screen**!
+   - **Start Command**: `node server/index.js`
+   - **Plan**: Free
+4. Render will provide a free public URL (e.g. `https://cloudstream-app.onrender.com`).
+5. Open this link on your iPhone and **Add to Home Screen**!
 
 ### Option B: Railway / Fly.io / VPS
 - Deploy with `npm start` on port `3000` or process environment `PORT`.

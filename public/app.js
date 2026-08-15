@@ -38,6 +38,26 @@
     if (e.button === 1) e.preventDefault();
   }, true);
 
+  // 🔒 Focus Lock & Popup Re-closer: If player is open and window blurs (popup attempted), instantly refocus
+  window.addEventListener('blur', () => {
+    const playerModal = document.getElementById('player-modal');
+    if (playerModal && playerModal.style.display === 'flex') {
+      setTimeout(() => {
+        window.focus();
+      }, 50);
+    }
+  });
+
+  // 🔒 Top-Navigation Guardian: Prevent untrusted iframes from hijacking or redirecting the parent app page
+  window.addEventListener('beforeunload', (e) => {
+    const playerModal = document.getElementById('player-modal');
+    if (playerModal && playerModal.style.display === 'flex') {
+      // If player is active, do not allow ad scripts to redirect parent window
+      e.preventDefault();
+      return (e.returnValue = '');
+    }
+  });
+
   // State
   const AppState = {
     currentTab: 'tab-home',
