@@ -1717,24 +1717,19 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  z-index: 310;
+  z-index: 500;
+  pointer-events: auto;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.player-top-wake-zone {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  z-index: 315;
-  pointer-events: auto;
+.player-modal.controls-hidden .player-header {
+  opacity: 0.2;
 }
 
-.player-modal.controls-hidden .player-header {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-8px);
+.player-header:hover,
+.player-header:active,
+.player-modal:not(.controls-hidden) .player-header {
+  opacity: 1;
 }
 
 .player-modal.controls-hidden .player-episode-bar,
@@ -1748,7 +1743,7 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(10, 13, 22, 0.8);
+  background: rgba(10, 13, 22, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.15);
@@ -1759,6 +1754,9 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   font-size: 15px;
   cursor: pointer;
   flex-shrink: 0;
+  position: relative;
+  z-index: 505;
+  pointer-events: auto;
   transition: all var(--transition-fast);
 }
 
@@ -1810,7 +1808,7 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   gap: 6px;
   padding: 7px 12px;
   border-radius: 20px;
-  background: rgba(10, 13, 22, 0.8);
+  background: rgba(10, 13, 22, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.15);
@@ -1818,6 +1816,9 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
+  position: relative;
+  z-index: 505;
+  pointer-events: auto;
   transition: all var(--transition-fast);
   white-space: nowrap;
   font-family: var(--font-body);
@@ -1831,7 +1832,7 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   gap: 6px;
   padding: 7px 12px;
   border-radius: 20px;
-  background: rgba(10, 13, 22, 0.8);
+  background: rgba(10, 13, 22, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255,255,255,0.15);
@@ -1839,6 +1840,9 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
+  position: relative;
+  z-index: 505;
+  pointer-events: auto;
   transition: all var(--transition-fast);
   white-space: nowrap;
   font-family: var(--font-body);

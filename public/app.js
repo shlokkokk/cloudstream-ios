@@ -1822,12 +1822,9 @@
     DOM.playerModal.addEventListener('touchstart', wakeControls, { passive: true });
     DOM.playerModal.addEventListener('mousemove', wakeControls);
     DOM.playerModal.addEventListener('click', wakeControls);
-
-    const topWake = document.getElementById('player-top-wake-zone');
-    if (topWake) {
-      topWake.addEventListener('mouseenter', wakeControls);
-      topWake.addEventListener('touchstart', wakeControls, { passive: true });
-      topWake.addEventListener('click', wakeControls);
+    if (DOM.playerHeader) {
+      DOM.playerHeader.addEventListener('mouseenter', wakeControls);
+      DOM.playerHeader.addEventListener('touchstart', wakeControls, { passive: true });
     }
 
     // Player close
