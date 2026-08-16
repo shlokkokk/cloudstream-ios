@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import os from 'os';
 import qrcode from 'qrcode-terminal';
+import axios from 'axios';
 
 import {
   getHomeCatalog,
@@ -220,6 +221,138 @@ app.get('/api/sources/stream', async (req, res) => {
 // 6. Media and Subtitle Proxies
 app.get('/api/proxy/stream', proxyStreamHandler);
 app.get('/api/proxy/subtitles', proxySubtitlesHandler);
+
+// ─── 6c. Subtitle Search Endpoint (OpenSubtitles v3 + Fallback) ───────────────
+// GET /api/subtitles?tmdbId=&lang=en&type=movie&season=1&episode=1
+// Returns array of subtitle tracks with proxied VTT URLs
+const OPENSUBTITLES_API_KEY = process.env.OPENSUBTITLES_API_KEY || 'Ls5IbHbG3wHPfpf7FfFr5Dk0NqJBQGwB';
+const SUBTITLE_CACHE = new Map();
+
+// Convert SRT text to WebVTT format
+function srtToVtt(srt) {
+  return 'WEBVTT\n\n' + srt
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .replace(/(\d{2}:\d{2}:\d{2}),(\d{3})/g, '$1.$2')
+    .trim();
+}
+
+app.get('/api/subtitles', async (req, res) => {
+  const { tmdbId, lang = 'en', type = 'movie', season = 1, episode = 1 } = req.query;
+  if (!tmdbId) return res.status(400).json({ error: 'tmdbId required' });
+
+  const cacheKey = `${tmdbId}:${lang}:${type}:${season}:${episode}`;
+  if (SUBTITLE_CACHE.has(cacheKey)) {
+    return res.json(SUBTITLE_CACHE.get(cacheKey));
+  }
+
+  try {
+    const params = { tmdb_id: tmdbId, languages: lang };
+    if (type === 'tv') {
+      params.season_number = parseInt(season) || 1;
+      params.episode_number = parseInt(episode) || 1;
+    }
+
+    const searchRes = await axios.get('https://api.opensubtitles.com/api/v1/subtitles', {
+      headers: {
+        'Api-Key': OPENSUBTITLES_API_KEY,
+        'User-Agent': 'CloudStreamIOS v4.8',
+        'Content-Type': 'application/json'
+      },
+      params,
+      timeout: 8000
+    });
+
+    const tracks = (searchRes.data?.data || []).slice(0, 5).map(item => ({
+      id: item.id,
+      lang: item.attributes?.language || lang,
+      name: (item.attributes?.language || lang).toUpperCase() + ' [CC]',
+      format: 'vtt',
+      fileId: item.attributes?.files?.[0]?.file_id,
+      downloadUrl: item.attributes?.files?.[0]?.file_id
+        ? `/api/subtitles/download?fileId=${item.attributes.files[0].file_id}`
+        : null
+    })).filter(t => t.downloadUrl);
+
+    const result = { tracks };
+    SUBTITLE_CACHE.set(cacheKey, result);
+    setTimeout(() => SUBTITLE_CACHE.delete(cacheKey), 30 * 60 * 1000); // 30-min TTL
+    res.json(result);
+
+  } catch (err) {
+    console.warn('[Subtitles] OpenSubtitles fetch failed:', err.message);
+    // Fallback: return empty tracks gracefully
+    res.json({ tracks: [] });
+  }
+});
+
+// ─── 6d. Subtitle File Download + SRT→VTT Proxy ──────────────────────────────
+app.get('/api/subtitles/download', async (req, res) => {
+  const { fileId, url } = req.query;
+
+  // Direct URL proxy (for when we already have a .srt/.vtt URL)
+  if (url) {
+    try {
+      const r = await axios.get(decodeURIComponent(url), {
+        responseType: 'text', timeout: 10000,
+        headers: { 'User-Agent': 'CloudStreamIOS v4.8' }
+      });
+      const body = r.data;
+      res.setHeader('Content-Type', 'text/vtt; charset=utf-8');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      // Convert SRT → VTT if needed
+      if (!body.startsWith('WEBVTT')) {
+        res.send(srtToVtt(body));
+      } else {
+        res.send(body);
+      }
+    } catch (err) {
+      res.status(502).send('WEBVTT\n\n');
+    }
+    return;
+  }
+
+  // OpenSubtitles fileId → fetch download link, then proxy file
+  if (!fileId) return res.status(400).send('WEBVTT\n\n');
+
+  try {
+    const dlRes = await axios.post('https://api.opensubtitles.com/api/v1/download',
+      { file_id: parseInt(fileId), sub_format: 'webvtt' },
+      {
+        headers: {
+          'Api-Key': OPENSUBTITLES_API_KEY,
+          'User-Agent': 'CloudStreamIOS v4.8',
+          'Content-Type': 'application/json'
+        },
+        timeout: 8000
+      }
+    );
+
+    const downloadLink = dlRes.data?.link;
+    if (!downloadLink) throw new Error('No download link returned');
+
+    const fileRes = await axios.get(downloadLink, {
+      responseType: 'text', timeout: 15000,
+      headers: { 'User-Agent': 'CloudStreamIOS v4.8' }
+    });
+
+    res.setHeader('Content-Type', 'text/vtt; charset=utf-8');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+
+    const content = fileRes.data;
+    if (!content.startsWith('WEBVTT')) {
+      res.send(srtToVtt(content));
+    } else {
+      res.send(content);
+    }
+
+  } catch (err) {
+    console.warn('[Subtitles] Download failed:', err.message);
+    res.setHeader('Content-Type', 'text/vtt; charset=utf-8');
+    res.send('WEBVTT\n\n');
+  }
+});
 
 // 6b. HLS/M3U8 CORS Proxy — mirrors Android OkHttp bypassing CORS
 // Relays m3u8 and ts segments with correct headers so HLS.js can play them

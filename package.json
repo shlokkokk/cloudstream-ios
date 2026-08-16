@@ -9,6 +9,7 @@
     "dev": "node --watch server/index.js"
   },
   "dependencies": {
+    "@movie-web/providers": "^2.4.13",
     "axios": "^1.7.9",
     "cheerio": "^1.2.0",
     "cors": "^2.8.5",
