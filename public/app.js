@@ -1004,6 +1004,8 @@
       DOM.streamEmbedFrame.src = 'about:blank';
       DOM.nativeVideoPlayer.style.display = 'block';
       if (DOM.playerHud) DOM.playerHud.style.display = 'block';
+      if (DOM.gestureLeft) DOM.gestureLeft.classList.add('active');
+      if (DOM.gestureRight) DOM.gestureRight.classList.add('active');
 
       if (window.activeHlsInstance) {
         window.activeHlsInstance.destroy();
@@ -1043,6 +1045,8 @@
       DOM.nativeVideoPlayer.style.display = 'none';
       DOM.nativeVideoPlayer.pause();
       if (DOM.playerHud) DOM.playerHud.style.display = 'none';
+      if (DOM.gestureLeft) DOM.gestureLeft.classList.remove('active');
+      if (DOM.gestureRight) DOM.gestureRight.classList.remove('active');
       if (window.activeHlsInstance) { window.activeHlsInstance.destroy(); window.activeHlsInstance = null; }
 
       if (DOM.playerLoadingOverlay) DOM.playerLoadingOverlay.classList.remove('hidden');
@@ -1243,7 +1247,7 @@
 
   function updateSubLabel(lang) {
     if (!DOM.currentSubLabel) return;
-    DOM.currentSubLabel.textContent = lang === 'off' ? 'Off' : lang.toUpperCase();
+    DOM.currentSubLabel.textContent = (!lang || lang === 'off') ? 'CC' : lang.toUpperCase();
   }
 
   // Subtitle languages for drawer
@@ -1255,7 +1259,7 @@
     { code: 'de', name: 'German', flag: '🇩🇪', badge: 'Deutsch', desc: 'German subtitle track' },
     { code: 'ar', name: 'Arabic', flag: '🇸🇦', badge: 'عربي', desc: 'Arabic subtitle track' },
     { code: 'pt', name: 'Portuguese', flag: '🇧🇷', badge: 'Português', desc: 'Portuguese subtitle track' },
-    { code: 'off', name: 'Captions Off', flag: '🚫', badge: 'Off', desc: 'Hide all on-screen subtitles' }
+    { code: 'off', name: 'Captions Off', flag: '🚫', badge: 'CC', desc: 'Hide all on-screen subtitles' }
   ];
 
   function renderSubtitleDrawer() {
@@ -1819,6 +1823,13 @@
     DOM.playerModal.addEventListener('mousemove', wakeControls);
     DOM.playerModal.addEventListener('click', wakeControls);
 
+    const topWake = document.getElementById('player-top-wake-zone');
+    if (topWake) {
+      topWake.addEventListener('mouseenter', wakeControls);
+      topWake.addEventListener('touchstart', wakeControls, { passive: true });
+      topWake.addEventListener('click', wakeControls);
+    }
+
     // Player close
     DOM.playerBackBtn.addEventListener('click', () => {
       haptic(15);
@@ -1832,6 +1843,8 @@
       }
       if (window.activeHlsInstance) { window.activeHlsInstance.destroy(); window.activeHlsInstance = null; }
       clearSubtitles();
+      if (DOM.gestureLeft) DOM.gestureLeft.classList.remove('active');
+      if (DOM.gestureRight) DOM.gestureRight.classList.remove('active');
       if (DOM.playerHud) DOM.playerHud.style.display = 'none';
       if (DOM.playerLoadingOverlay) DOM.playerLoadingOverlay.classList.remove('hidden');
     });

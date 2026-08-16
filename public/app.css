@@ -1721,15 +1721,26 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.player-modal.controls-hidden .player-header,
-.player-modal.controls-hidden .player-episode-bar,
-.player-modal.controls-hidden .player-hud {
+.player-top-wake-zone {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 315;
+  pointer-events: auto;
+}
+
+.player-modal.controls-hidden .player-header {
   opacity: 0;
   pointer-events: none;
   transform: translateY(-8px);
 }
 
-.player-modal.controls-hidden .player-episode-bar {
+.player-modal.controls-hidden .player-episode-bar,
+.player-modal.controls-hidden .player-hud {
+  opacity: 0;
+  pointer-events: none;
   transform: translateY(8px);
 }
 
@@ -1857,6 +1868,11 @@ input:checked + .toggle-slider:before { transform: translateX(20px); }
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
+}
+
+.player-gesture-zone.active {
+  pointer-events: auto;
 }
 
 .gesture-left { left: 0; }
